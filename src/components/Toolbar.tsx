@@ -1,6 +1,8 @@
 import { useRef, useState } from "react"
+import type { FeatureCollection } from "geojson"
 import { useStore, type Tool } from "../store/useStore"
-import { download, serializeMinified, serializePretty } from "../utils/geo"
+import { download, ensureIds, serializeMinified, serializePretty } from "../utils/geo"
+import { parsePastedGeoJSON } from "../utils/clipboard"
 import { GeometryTools } from "./GeometryTools"
 
 const DRAW_TOOLS: Array<{ id: Tool; label: string; title: string }> = [
@@ -49,6 +51,52 @@ export function Toolbar() {
 		setExportOpen(false)
 	}
 
+	const copyGeoJSON = async () => {
+		const { data, selectedIds, setStatus } = useStore.getState()
+		const doc: FeatureCollection =
+			selectedIds.length > 0
+				? {
+						type: "FeatureCollection",
+						features: data.features.filter((f) => selectedIds.includes(String(f.id))),
+					}
+				: data
+		try {
+			await navigator.clipboard.writeText(serializePretty(doc))
+			setStatus(
+				selectedIds.length > 0
+					? `Copied ${doc.features.length} selected feature(s) as GeoJSON`
+					: `Copied document (${doc.features.length} features) as GeoJSON`,
+			)
+		} catch {
+			setStatus("\u26a0 Clipboard unavailable \u2014 allow clipboard access and retry")
+		}
+	}
+
+	const pasteGeoJSON = async () => {
+		const { setStatus } = useStore.getState()
+		let text: string
+		try {
+			text = await navigator.clipboard.readText()
+		} catch {
+			setStatus("\u26a0 Clipboard unavailable \u2014 allow clipboard access and retry")
+			return
+		}
+		if (!text.trim()) {
+			setStatus("Clipboard is empty")
+			return
+		}
+		const result = parsePastedGeoJSON(text)
+		if (result.error) {
+			setStatus(`\u26a0 ${result.error}`)
+			return
+		}
+		const { data, applyData } = useStore.getState()
+		applyData(
+			ensureIds({ type: "FeatureCollection", features: [...data.features, ...result.features] }),
+			{ message: `Pasted ${result.features.length} feature(s) from clipboard` },
+		)
+	}
+
 	return (
 		<header className="toolbar" data-testid="toolbar">
 			<div className="brand">
@@ -91,6 +139,22 @@ export function Toolbar() {
 				</button>
 				<button className="toolbar-button" title="Minify JSON" onClick={() => useStore.getState().formatText(false)}>
 					Minify
+				</button>
+				<button
+					className="toolbar-button"
+					title="Copy GeoJSON to clipboard (selection, or the whole document)"
+					onClick={copyGeoJSON}
+					data-testid="copy-geojson"
+				>
+					Copy
+				</button>
+				<button
+					className="toolbar-button"
+					title="Paste GeoJSON from clipboard (adds features to the document)"
+					onClick={pasteGeoJSON}
+					data-testid="paste-geojson"
+				>
+					Paste
 				</button>
 			</div>
 
