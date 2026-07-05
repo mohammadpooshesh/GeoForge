@@ -1,16 +1,34 @@
 // Dependency-free smoke tests for GeoForge's pure logic modules.
-// Runs directly with Node >= 23 (native TypeScript type stripping):
+// Runs directly with Node >= 22.18 (native TypeScript type stripping):
 //   node scripts/smoke.node.mjs
+// Node's type stripping does not resolve extensionless relative imports,
+// so the needed sources are copied to a temp dir with ".ts" extensions
+// appended before importing.
 // The full Vitest suite (src/**/*.test.ts) covers these plus the Turf-based
 // geometry ops; this script exists so core logic can be verified even
 // without installing dependencies.
 import assert from "node:assert/strict"
+import { mkdtempSync, readFileSync, writeFileSync } from "node:fs"
+import { tmpdir } from "node:os"
+import { join } from "node:path"
+import { pathToFileURL } from "node:url"
 
-const { validateGeoJSON, hasErrors } = await import("../src/utils/validation.ts")
-const { applyFilter } = await import("../src/utils/filter.ts")
-const { computeStats } = await import("../src/utils/stats.ts")
-const { findFeatureRanges, featureIndexAtOffset } = await import("../src/utils/editorRange.ts")
-const { SAMPLE_DATA, serializePretty, ensureIds } = await import("../src/utils/geo.ts")
+const utilsDir = new URL("../src/utils/", import.meta.url)
+const workDir = mkdtempSync(join(tmpdir(), "gfsmoke-"))
+for (const name of ["geo.ts", "validation.ts", "filter.ts", "stats.ts", "editorRange.ts"]) {
+	const source = readFileSync(new URL(name, utilsDir), "utf8")
+	const patched = source.replace(/ from "(\.\.?\/[^"]+)"/g, (match, spec) =>
+		spec.endsWith(".ts") ? match : ` from "${spec}.ts"`,
+	)
+	writeFileSync(join(workDir, name), patched)
+}
+const load = (name) => import(pathToFileURL(join(workDir, name)).href)
+
+const { validateGeoJSON, hasErrors } = await load("validation.ts")
+const { applyFilter } = await load("filter.ts")
+const { computeStats } = await load("stats.ts")
+const { findFeatureRanges, featureIndexAtOffset } = await load("editorRange.ts")
+const { SAMPLE_DATA, serializePretty, ensureIds } = await load("geo.ts")
 
 let passed = 0
 let failed = 0
