@@ -6,7 +6,7 @@ GeoForge is a web IDE for GeoJSON files. It doesn't just *display* your data on 
 
 **🌍 Live demo: [mohammadpooshesh.github.io/GeoForge](https://mohammadpooshesh.github.io/GeoForge/)** — no install, no sign-up. Open it in your browser and start editing.
 
-![GeoForge — dark mode, three-pane layout](docs/screenshot.svg)
+![GeoForge — dark mode, three-pane layout](docs/screenshot.png)
 
 ```
 +-------------------------------------------------------------+

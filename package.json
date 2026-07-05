@@ -10,7 +10,8 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "screenshot": "node scripts/screenshot.mjs"
   },
   "dependencies": {
     "@mapbox/mapbox-gl-draw": "^1.5.0",
