@@ -1,0 +1,34 @@
+{
+  "name": "geoforge",
+  "private": true,
+  "version": "0.1.0",
+  "description": "GeoForge — The Modern GeoJSON Editor. A VS Code-like IDE for GeoJSON, fully client-side.",
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@mapbox/mapbox-gl-draw": "^1.5.0",
+    "@monaco-editor/react": "^4.6.0",
+    "@turf/turf": "^7.1.0",
+    "maplibre-gl": "^4.7.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "zustand": "^5.0.2"
+  },
+  "devDependencies": {
+    "@types/geojson": "^7946.0.14",
+    "@types/mapbox__mapbox-gl-draw": "^1.4.8",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.11",
+    "vitest": "^2.1.8"
+  }
+}
