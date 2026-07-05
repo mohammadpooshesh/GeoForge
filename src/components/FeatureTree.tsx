@@ -102,7 +102,7 @@ export function FeatureTree() {
 				ref={viewportRef}
 				onScroll={(e) => setScrollTop((e.target as HTMLDivElement).scrollTop)}
 			>
-				<div className="tree-spacer" style= height: rows.length * ROW_HEIGHT >
+				<div className="tree-spacer" style={ { height: rows.length * ROW_HEIGHT } }>
 					{rows.slice(startIndex, endIndex).map((row, i) => {
 						const top = (startIndex + i) * ROW_HEIGHT
 						if (row.kind === "detail") {
@@ -110,7 +110,7 @@ export function FeatureTree() {
 								<div
 									key={row.id}
 									className="tree-row tree-detail"
-									style= top, height: ROW_HEIGHT 
+									style={ { top, height: ROW_HEIGHT } }
 								>
 									{row.text}
 								</div>
@@ -124,7 +124,7 @@ export function FeatureTree() {
 							<div
 								key={row.id}
 								className={`tree-row tree-feature${selectedSet.has(row.id) ? " selected" : ""}`}
-								style= top, height: ROW_HEIGHT 
+								style={ { top, height: ROW_HEIGHT } }
 								onClick={(e) => setSelected([row.id], e.ctrlKey || e.metaKey)}
 							>
 								<button
