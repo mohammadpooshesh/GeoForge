@@ -4,6 +4,10 @@
 
 GeoForge is a web IDE for GeoJSON files. It doesn't just *display* your data on a map — it gives you a real editing environment: a Monaco code editor, an interactive MapLibre map, and a VS Code-style feature explorer, all kept in sync in real time.
 
+**🌍 Live demo: [mohammadpooshesh.github.io/GeoForge](https://mohammadpooshesh.github.io/GeoForge/)** — no install, no sign-up. Open it in your browser and start editing.
+
+![GeoForge — dark mode, three-pane layout](docs/screenshot.svg)
+
 ```
 +-------------------------------------------------------------+
 | Toolbar                                                     |
@@ -63,6 +67,7 @@ Add / rename / delete fields, change types (string · number · boolean), sort k
 ### And more
 - **Statistics**: feature/type/vertex counts, file size, bounds, center, CRS
 - **Export**: GeoJSON (pretty / minified) and JSON
+- **Clipboard**: **Copy GeoJSON** (the whole document, or just the selection) and **Paste GeoJSON** from the clipboard — accepts a FeatureCollection, a single Feature, a bare geometry, or an array of them
 - **History**: full undo/redo (up to 200 steps)
 - **Auto-save** to LocalStorage — close the tab, your work survives
 - **Dark / light mode**
